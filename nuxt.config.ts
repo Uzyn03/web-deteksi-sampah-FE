@@ -30,6 +30,13 @@ export default defineNuxtConfig({
       firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET,
       firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
       firebaseAppId: process.env.FIREBASE_APP_ID,
+
+      cloudinaryCloudName: process.env.VITE_CLOUDINARY_CLOUD_NAME,
+      cloudinaryApiKey: process.env.VITE_CLOUDINARY_API_KEY,
+      cloudinaryUploadPreset: process.env.VITE_CLOUDINARY_UPLOAD_PRESET,
+
+      // API Configuration
+      apiBaseUrl: process.env.API_BASE_URL,
     },
   },
 });

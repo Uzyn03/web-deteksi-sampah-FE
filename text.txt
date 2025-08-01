@@ -2,7 +2,6 @@ ini adalah struktur file frontend saya menggunakan nuxt3, tailwindcss, shadcn/ui
 web-deteksi-sampah 
 assets > css >
 components >
-    1. DashboardStat.vue :
     <template>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <Card class="bg-white shadow">
@@ -42,6 +41,8 @@ const totalOrganik = 74
 const totalAnorganik = 53
 </script>
 
+
+
     2. edukasiCard.vue :
     <template>
   <Card :class="`border-${color}-500`">
@@ -67,260 +68,1159 @@ defineProps({
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 </script>
 
+  3. AppNavigation.vue :
+  <template>
+  <nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex justify-between items-center h-16">
+        <!-- Logo -->
+        <div class="flex items-center">
+          <NuxtLink to="/" class="flex items-center space-x-2">
+            <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+            </div>
+            <span class="text-xl font-bold text-gray-800">EcoDetect</span>
+          </NuxtLink>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center space-x-8">
+          <NuxtLink 
+            to="/" 
+            class="text-gray-600 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+            :class="{ 'text-green-600 bg-green-50': $route.path === '/' }"
+          >
+            Deteksi
+          </NuxtLink>
+          <NuxtLink 
+            to="/dashboard" 
+            class="text-gray-600 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+            :class="{ 'text-green-600 bg-green-50': $route.path === '/dashboard' }"
+          >
+            Dashboard
+          </NuxtLink>
+          <NuxtLink 
+            to="/history" 
+            class="text-gray-600 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+            :class="{ 'text-green-600 bg-green-50': $route.path === '/history' }"
+          >
+            Riwayat
+          </NuxtLink>
+          <NuxtLink 
+            to="/edukasi" 
+            class="text-gray-600 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+            :class="{ 'text-green-600 bg-green-50': $route.path === '/edukasi' }"
+          >
+            Edukasi
+          </NuxtLink>
+          <NuxtLink 
+            to="/about" 
+            class="text-gray-600 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+            :class="{ 'text-green-600 bg-green-50': $route.path === '/about' }"
+          >
+            Tentang
+          </NuxtLink>
+        </div>
+
+        <!-- Mobile menu button -->
+        <div class="md:hidden">
+          <Button variant="ghost" size="sm" @click="toggleMobileMenu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </Button>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div v-if="isMobileMenuOpen" class="md:hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t">
+          <NuxtLink 
+            to="/" 
+            class="text-gray-600 hover:text-green-600 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
+            @click="closeMobileMenu"
+          >
+            Deteksi
+          </NuxtLink>
+          <NuxtLink 
+            to="/dashboard" 
+            class="text-gray-600 hover:text-green-600 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
+            @click="closeMobileMenu"
+          >
+            Dashboard
+          </NuxtLink>
+          <NuxtLink 
+            to="/history" 
+            class="text-gray-600 hover:text-green-600 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
+            @click="closeMobileMenu"
+          >
+            Riwayat
+          </NuxtLink>
+          <NuxtLink 
+            to="/edukasi" 
+            class="text-gray-600 hover:text-green-600 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
+            @click="closeMobileMenu"
+          >
+            Edukasi
+          </NuxtLink>
+          <NuxtLink 
+            to="/about" 
+            class="text-gray-600 hover:text-green-600 hover:bg-gray-50 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
+            @click="closeMobileMenu"
+          >
+            Tentang
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { Button } from '@/components/ui/button'
+
+const isMobileMenuOpen = ref(false)
+
+const toggleMobileMenu = () => {
+  isMobileMenuOpen.value = !isMobileMenuOpen.value
+}
+
+const closeMobileMenu = () => {
+  isMobileMenuOpen.value = false
+}
+</script>
+
+composable >
+  1. useFirestore.js :
+  import { collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, doc } from "firebase/firestore"
+import { useNuxtApp } from "#app"
+
+export const useFirestore = () => {
+  const { $firestore } = useNuxtApp()
+
+  const saveDetectionResult = async (detectionData) => {
+    try {
+      const docRef = await addDoc(collection($firestore, "detections"), {
+        ...detectionData,
+        timestamp: new Date(),
+        createdAt: new Date().toISOString(),
+      })
+      return docRef.id
+    } catch (error) {
+      console.error("Error saving detection result:", error)
+      throw error
+    }
+  }
+
+  const getDetectionHistory = async (limitCount = 50) => {
+    try {
+      const q = query(collection($firestore, "detections"), orderBy("timestamp", "desc"), limit(limitCount))
+      const querySnapshot = await getDocs(q)
+      const history = []
+      querySnapshot.forEach((doc) => {
+        history.push({
+          id: doc.id,
+          ...doc.data(),
+        })
+      })
+      return history
+    } catch (error) {
+      console.error("Error getting detection history:", error)
+      throw error
+    }
+  }
+
+  const deleteDetection = async (id) => {
+    try {
+      await deleteDoc(doc($firestore, "detections", id))
+    } catch (error) {
+      console.error("Error deleting detection:", error)
+      throw error
+    }
+  }
+
+  const getStatistics = async () => {
+    try {
+      const querySnapshot = await getDocs(collection($firestore, "detections"))
+      let totalImages = 0
+      let totalOrganik = 0
+      let totalAnorganik = 0
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data()
+        totalImages++
+        if (data.dominantType === "organik") {
+          totalOrganik++
+        } else if (data.dominantType === "anorganik") {
+          totalAnorganik++
+        }
+      })
+
+      return {
+        totalImages,
+        totalOrganik,
+        totalAnorganik,
+      }
+    } catch (error) {
+      console.error("Error getting statistics:", error)
+      throw error
+    }
+  }
+
+  return {
+    saveDetectionResult,
+    getDetectionHistory,
+    deleteDetection,
+    getStatistics,
+  }
+}
+
+
 lib >
 pages >
     1. edukasi.vue :
     <template>
-    <div class="p-4">
-        <h1 class="text-2xl font-bold mb-4">Edukasi Pemilahan Sampah</h1>
+  <!-- Content of the Edukasi page goes here -->
+</template>
 
-        <div class="grid md:grid-cols-2 gap-4">
-        <EdukasiCard
-            title="Sampah Organik"
-            description="Sampah yang mudah terurai seperti sisa makanan, daun, kulit buah."
-            color="green"
-        />
-        <EdukasiCard
-            title="Sampah Anorganik"
-            description="Sampah yang sulit terurai seperti plastik, kaleng, dan kaca."
-            color="red"
-        />
-        </div>
-    </div>
-    </template>
+<script setup>
 
-    <script setup>
-    import EdukasiCard from '@/components/EdukasiCard.vue'
-    </script>
+useHead({
+  title: 'Edukasi - EcoDetect',
+  meta: [
+    { name: 'description', content: 'Pelajari tentang pemilahan sampah organik dan anorganik' }
+  ]
+});
+
+// Other script setup code can go here
+</script>
+
+<style scoped>
+/* Styles for the Edukasi page can go here */
+</style>
+
 
 
 2. index.vue :
     <template>
-    <div class="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <Card class="w-full max-w-2xl p-6 shadow-lg">
-        <CardHeader>
-            <CardTitle class="text-2xl font-bold text-center">Deteksi Sampah</CardTitle>
-            <CardDescription class="text-center text-gray-600">Unggah gambar untuk mendeteksi sampah organik dan anorganik.</CardDescription>
-        </CardHeader>
-        <CardContent>
-            <form @submit.prevent="handleSubmit" class="space-y-6">
-            <!-- Image Upload -->
-    <div class="mb-2">
-    <Label>Upload Gambar Sampah</Label>
-    <div class="mt-2">
-        <div
-        class="flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-colors"
-        >
-        <div class="space-y-1 text-center">
-            <div v-if="imagePreview" class="mb-4">
-            <img
-                :src="imagePreview"
-                alt="Preview"
-                class="mx-auto h-32 w-32 object-cover rounded-lg shadow-md"
-            />
-            <Button
-                type="button"
-                variant="destructive"
-                size="sm"
-                @click="removeImage"
-                class="mt-2"
-            >
-                Hapus Gambar
-            </Button>
+  <div class="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <Card class="w-full max-w-2xl p-6 shadow-lg">
+      <CardHeader>
+        <CardTitle class="text-2xl font-bold text-center">Deteksi Sampah</CardTitle>
+        <CardDescription class="text-center text-gray-600">Unggah gambar untuk mendeteksi sampah organik dan anorganik.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form @submit.prevent="handleSubmit" class="space-y-6">
+          <!-- Image Upload -->
+          <div class="mb-2">
+            <Label>Upload Gambar Sampah</Label>
+            <div class="mt-2">
+              <div
+                class="flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-colors"
+              >
+                <div class="space-y-1 text-center">
+                  <div v-if="imagePreview" class="mb-4">
+                    <img
+                      :src="imagePreview"
+                      alt="Preview"
+                      class="mx-auto h-32 w-32 object-cover rounded-lg shadow-md"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      @click="removeImage"
+                      class="mt-2"
+                    >
+                      Hapus Gambar
+                    </Button>
+                  </div>
+                  <div v-else>
+                    <svg
+                      class="mx-auto h-12 w-12 text-gray-400"
+                      stroke="currentColor"
+                      fill="none"
+                      viewBox="0 0 48 48"
+                    >
+                      <path
+                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <div class="flex text-sm text-gray-600">
+                      <label
+                        for="file-upload"
+                        class="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-primary/80"
+                      >
+                        <span>Upload a file</span>
+                        <input
+                          id="file-upload"
+                          name="file-upload"
+                          type="file"
+                          accept="image/*"
+                          @change="handleFileChange"
+                          class="sr-only"
+                        />
+                      </label>
+                      <p class="pl-1">or drag and drop</p>
+                    </div>
+                    <p class="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div v-else>
-            <svg
-                class="mx-auto h-12 w-12 text-gray-400"
-                stroke="currentColor"
-                fill="none"
-                viewBox="0 0 48 48"
-            >
-                <path
-                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                />
-            </svg>
-            <div class="flex text-sm text-gray-600">
-                <label
-                for="file-upload"
-                class="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-primary/80"
-                >
-                <span>Upload a file</span>
-                <input
-                    id="file-upload"
-                    name="file-upload"
-                    type="file"
-                    accept="image/*"
-                    @change="handleFileChange"
-                    class="sr-only"
-                />
-                </label>
-                <p class="pl-1">or drag and drop</p>
-            </div>
-            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
-            </div>
+          </div>
+
+          <div class="grid w-full items-center gap-1.5">
+            <Label for="confidence">Confidence Threshold (0.0 - 1.0)</Label>
+            <Input id="confidence" type="number" step="0.01" min="0" max="1" v-model.number="confidenceThreshold" placeholder="0.25" />
+          </div>
+
+          <div class="grid w-full items-center gap-1.5">
+            <Label for="iou">IoU Threshold (0.0 - 1.0)</Label>
+            <Input id="iou" type="number" step="0.01" min="0" max="1" v-model.number="iouThreshold" placeholder="0.45" />
+          </div>
+
+          <Button type="submit" :disabled="isSubmitting || !selectedFile" class="w-full">
+            <span v-if="isSubmitting" class="flex items-center justify-center">
+              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Mendeteksi...
+            </span>
+            <span v-else>Deteksi Sampah</span>
+          </Button>
+        </form>
+
+        <div v-if="apiError" class="mt-6 p-4 bg-red-100 text-red-700 rounded-md">
+          <p class="font-semibold">Error:</p>
+          <p>{{ apiError }}</p>
         </div>
+
+        <div v-if="detectionResult" class="mt-6 border-t pt-6">
+          <h3 class="text-xl font-semibold mb-4">Hasil Deteksi:</h3>
+          <p class="mb-2">Ditemukan: <span class="font-bold">{{ detectionResult.detection_count }} objek</span></p>
+          <p class="mb-4">Waktu Pemrosesan: <span class="font-bold">{{ detectionResult.processing_time.toFixed(3) }} detik</span></p>
+
+          <div v-if="detectionResult.annotated_image" class="mb-6">
+            <h4 class="text-lg font-medium mb-2">Gambar Teranotasi:</h4>
+            <img :src="detectionResult.annotated_image" alt="Annotated Image" class="max-w-full h-auto rounded-md shadow-md" />
+          </div>
+
+          <div v-if="detectionResult.detections && detectionResult.detections.length > 0">
+            <h4 class="text-lg font-medium mb-2">Detail Deteksi:</h4>
+            <ul class="space-y-2">
+              <li v-for="(det, index) in detectionResult.detections" :key="index" class="p-3 bg-gray-50 rounded-md border border-gray-200">
+                <p><strong>Kelas:</strong> {{ det.class_name }} (ID: {{ det.class_id }})</p>
+                <p><strong>Kepercayaan:</strong> {{ det.confidence.toFixed(4) }}</p>
+                <p><strong>BBox:</strong> (x1: {{ det.bbox.x1.toFixed(2)}}, y1: {{ det.bbox.y1.toFixed(2)}}, x2: {{ det.bbox.x2.toFixed(2)}}, y2: {{ det.bbox.y2.toFixed(2)}})</p>
+              </li>
+            </ul>
+          </div>
+          <div v-else>
+            <p class="text-gray-500">Tidak ada objek yang terdeteksi pada gambar ini.</p>
+          </div>
         </div>
-    </div>
-    </div>
+      </CardContent>
+    </Card>
+  </div>
+</template>
 
-            <div class="grid w-full items-center gap-1.5">
-                <Label for="confidence">Confidence Threshold (0.0 - 1.0)</Label>
-                <Input id="confidence" type="number" step="0.01" min="0" max="1" v-model.number="confidenceThreshold" placeholder="0.25" />
-            </div>
+<script setup>
+import { ref } from 'vue'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
-            <div class="grid w-full items-center gap-1.5">
-                <Label for="iou">IoU Threshold (0.0 - 1.0)</Label>
-                <Input id="iou" type="number" step="0.01" min="0" max="1" v-model.number="iouThreshold" placeholder="0.45" />
-            </div>
+// SEO - gunakan useHead bawaan Nuxt 3
+useHead({
+  title: 'Deteksi Sampah - EcoDetect',
+  meta: [
+    { name: 'description', content: 'Upload gambar untuk mendeteksi sampah organik dan anorganik menggunakan AI' }
+  ]
+})
 
-            <Button type="submit" :disabled="isSubmitting || !selectedFile" class="w-full">
-                <span v-if="isSubmitting" class="flex items-center justify-center">
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Mendeteksi...
-                </span>
-                <span v-else>Deteksi Sampah</span>
-            </Button>
-            </form>
+const selectedFile = ref(null)
+const confidenceThreshold = ref(0.25)
+const iouThreshold = ref(0.45)
+const isSubmitting = ref(false)
+const detectionResult = ref(null)
+const apiError = ref(null)
+const fileError = ref('')
+const imagePreview = ref(null)
 
-            <div v-if="apiError" class="mt-6 p-4 bg-red-100 text-red-700 rounded-md">
-            <p class="font-semibold">Error:</p>
-            <p>{{ apiError }}</p>
-            </div>
+const removeImage = () => {
+  selectedFile.value = null
+  imagePreview.value = null
+}
 
-            <div v-if="detectionResult" class="mt-6 border-t pt-6">
-            <h3 class="text-xl font-semibold mb-4">Hasil Deteksi:</h3>
-            <p class="mb-2">Ditemukan: <span class="font-bold">{{ detectionResult.detection_count }} objek</span></p>
-            <p class="mb-4">Waktu Pemrosesan: <span class="font-bold">{{ detectionResult.processing_time.toFixed(3) }} detik</span></p>
-
-            <div v-if="detectionResult.annotated_image" class="mb-6">
-                <h4 class="text-lg font-medium mb-2">Gambar Teranotasi:</h4>
-                <img :src="detectionResult.annotated_image" alt="Annotated Image" class="max-w-full h-auto rounded-md shadow-md" />
-            </div>
-
-            <div v-if="detectionResult.detections && detectionResult.detections.length > 0">
-                <h4 class="text-lg font-medium mb-2">Detail Deteksi:</h4>
-                <ul class="space-y-2">
-                <li v-for="(det, index) in detectionResult.detections" :key="index" class="p-3 bg-gray-50 rounded-md border border-gray-200">
-                    <p><strong>Kelas:</strong> {{ det.class_name }} (ID: {{ det.class_id }})</p>
-                    <p><strong>Kepercayaan:</strong> {{ det.confidence.toFixed(4) }}</p>
-                    <p><strong>BBox:</strong> (x1: {{ det.bbox.x1.toFixed(2)}}, y1: {{ det.bbox.y1.toFixed(2)}}, x2: {{ det.bbox.x2.toFixed(2)}}, y2: {{ det.bbox.y2.toFixed(2)}})</p>
-                </li>
-                </ul>
-            </div>
-            <div v-else>
-                <p class="text-gray-500">Tidak ada objek yang terdeteksi pada gambar ini.</p>
-            </div>
-            </div>
-        </CardContent>
-        </Card>
-    </div>
-    </template>
-
-    <script setup>
-    import { ref } from 'vue';
-    // Impor komponen shadcn/ui. Asumsikan ini sudah diinstal dan tersedia di proyek Anda.
-    import { Button } from '@/components/ui/button';
-    import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-    import { Input } from '@/components/ui/input';
-    import { Label } from '@/components/ui/label';
-
-    const selectedFile = ref(null);
-    const confidenceThreshold = ref(0.25); // Nilai default yang direkomendasikan
-    const iouThreshold = ref(0.45);       // Nilai default yang direkomendasikan
-    const isSubmitting = ref(false);
-    const detectionResult = ref(null);
-    const apiError = ref(null);
-    const fileError = ref('');
-    const imagePreview = ref(null)
-
-    const removeImage = () => {
+const handleFileChange = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    if (!file.type.startsWith('image/')) {
+      fileError.value = 'Hanya file gambar yang diizinkan.'
+      selectedFile.value = null
+      return
+    }
+    fileError.value = ''
+    selectedFile.value = file
+    imagePreview.value = URL.createObjectURL(file)
+  } else {
     selectedFile.value = null
     imagePreview.value = null
+  }
+}
+
+const handleSubmit = async () => {
+  if (!selectedFile.value) {
+    fileError.value = 'Silakan pilih file gambar terlebih dahulu.'
+    return
+  }
+
+  isSubmitting.value = true
+  apiError.value = null
+  detectionResult.value = null
+
+  const formData = new FormData()
+  formData.append('file', selectedFile.value)
+  formData.append('confidence_threshold', confidenceThreshold.value)
+  formData.append('iou_threshold', iouThreshold.value)
+  formData.append('return_image', 'true')
+
+  try {
+    const response = await fetch('http://localhost:8000/api/v1/detection/detect', {
+      method: 'POST',
+      body: formData,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.detail || 'Terjadi kesalahan saat deteksi.')
     }
 
-    const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        if (!file.type.startsWith('image/')) {
-        fileError.value = 'Hanya file gambar yang diizinkan.';
-        selectedFile.value = null;
-        imagePreview.value = URL.createObjectURL(file)
-        return;
-        }
-        fileError.value = '';
-        selectedFile.value = file;
-    } else {
-        selectedFile.value = null;
-        imagePreview.value = null
+    const data = await response.json()
+    detectionResult.value = data
+  } catch (error) {
+    apiError.value = error.message
+    console.error('Error during detection:', error)
+  } finally {
+    isSubmitting.value = false
+  }
+}
+</script>
+
+    3. about.vue :
+
+<template>
+  <div class="max-w-4xl mx-auto space-y-8">
+    <!-- Hero Section -->
+    <div class="text-center space-y-4">
+      <h1 class="text-4xl font-bold text-gray-900">Tentang EcoDetect</h1>
+      <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+        Sistem deteksi sampah berbasis AI untuk membantu pengelolaan limbah yang lebih efektif dan berkelanjutan.
+      </p>
+    </div>
+
+    <!-- Mission & Vision -->
+    <div class="grid md:grid-cols-2 gap-8">
+      <Card>
+        <CardHeader>
+          <CardTitle class="flex items-center space-x-2">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+            <span>Misi Kami</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p class="text-gray-600">
+            Mengembangkan teknologi AI yang dapat membantu masyarakat dalam mengidentifikasi dan memilah sampah dengan akurat, 
+            sehingga mendukung program daur ulang dan pengelolaan limbah yang berkelanjutan.
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle class="flex items-center space-x-2">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+            </svg>
+            <span>Visi Kami</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p class="text-gray-600">
+            Menjadi platform terdepan dalam teknologi deteksi sampah yang membantu menciptakan lingkungan yang lebih bersih 
+            dan mendukung ekonomi sirkular melalui pengelolaan sampah yang cerdas.
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+
+    <!-- Features -->
+    <Card>
+      <CardHeader>
+        <CardTitle>Fitur Utama</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold">Deteksi Akurat</h3>
+              <p class="text-sm text-gray-600">AI dengan tingkat akurasi tinggi dalam mengidentifikasi jenis sampah</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold">Dashboard Analitik</h3>
+              <p class="text-sm text-gray-600">Visualisasi data dan statistik deteksi sampah</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold">Edukasi</h3>
+              <p class="text-sm text-gray-600">Informasi edukatif tentang pengelolaan sampah</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold">Riwayat Deteksi</h3>
+              <p class="text-sm text-gray-600">Penyimpanan dan pelacakan hasil deteksi</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold">Mudah Digunakan</h3>
+              <p class="text-sm text-gray-600">Interface yang intuitif dan user-friendly</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold">Export Data</h3>
+              <p class="text-sm text-gray-600">Ekspor hasil deteksi untuk analisis lebih lanjut</p>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+
+    <!-- Technology Stack -->
+    <Card>
+      <CardHeader>
+        <CardTitle>Teknologi yang Digunakan</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="text-center p-4 border rounded-lg">
+            <div class="w-12 h-12 bg-green-100 rounded-lg mx-auto mb-2 flex items-center justify-center">
+              <span class="text-green-600 font-bold">AI</span>
+            </div>
+            <h3 class="font-semibold">Machine Learning</h3>
+            <p class="text-sm text-gray-600">YOLO Object Detection</p>
+          </div>
+
+          <div class="text-center p-4 border rounded-lg">
+            <div class="w-12 h-12 bg-blue-100 rounded-lg mx-auto mb-2 flex items-center justify-center">
+              <span class="text-blue-600 font-bold">Vue</span>
+            </div>
+            <h3 class="font-semibold">Frontend</h3>
+            <p class="text-sm text-gray-600">Nuxt 3 + Tailwind CSS</p>
+          </div>
+
+          <div class="text-center p-4 border rounded-lg">
+            <div class="w-12 h-12 bg-purple-100 rounded-lg mx-auto mb-2 flex items-center justify-center">
+              <span class="text-purple-600 font-bold">API</span>
+            </div>
+            <h3 class="font-semibold">Backend</h3>
+            <p class="text-sm text-gray-600">FastAPI + Python</p>
+          </div>
+
+          <div class="text-center p-4 border rounded-lg">
+            <div class="w-12 h-12 bg-orange-100 rounded-lg mx-auto mb-2 flex items-center justify-center">
+              <span class="text-orange-600 font-bold">DB</span>
+            </div>
+            <h3 class="font-semibold">Database</h3>
+            <p class="text-sm text-gray-600">Firebase Firestore</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+
+    <!-- Contact -->
+    <Card>
+      <CardHeader>
+        <CardTitle>Kontak Developer</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div class="flex items-center justify-center space-x-8">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-2 flex items-center justify-center">
+              <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+            </div>
+            <h3 class="font-semibold">Uzyn</h3>
+            <p class="text-sm text-gray-600">Full Stack Developer</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+</template>
+
+<script setup>
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+</script>
+    4. dashboard.vue :
+    <template>
+  <div class="space-y-6">
+    <div class="flex items-center justify-between">
+      <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+      <Button @click="refreshData" :disabled="isLoading">
+        <svg v-if="isLoading" class="animate-spin -ml-1 mr-3 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Refresh
+      </Button>
+    </div>
+
+    <!-- Statistics Cards -->
+    <DashboardStat 
+      :totalImages="stats.totalImages"
+      :totalOrganik="stats.totalOrganik"
+      :totalAnorganik="stats.totalAnorganik"
+    />
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Detection Trend Chart -->
+      <Card>
+        <CardHeader>
+          <CardTitle>Trend Deteksi Mingguan</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div class="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
+            <p class="text-gray-500">Chart akan ditampilkan di sini</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <!-- Waste Type Distribution -->
+      <Card>
+        <CardHeader>
+          <CardTitle>Distribusi Jenis Sampah</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium">Organik</span>
+              <span class="text-sm text-gray-500">{{ ((stats.totalOrganik / stats.totalImages) * 100).toFixed(1) }}%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                class="bg-green-600 h-2 rounded-full" 
+                :style="{ width: `${(stats.totalOrganik / stats.totalImages) * 100}%` }"
+              ></div>
+            </div>
+            
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium">Anorganik</span>
+              <span class="text-sm text-gray-500">{{ ((stats.totalAnorganik / stats.totalImages) * 100).toFixed(1) }}%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                class="bg-red-600 h-2 rounded-full" 
+                :style="{ width: `${(stats.totalAnorganik / stats.totalImages) * 100}%` }"
+              ></div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+
+    <!-- Recent Activity -->
+    <Card>
+      <CardHeader>
+        <CardTitle>Aktivitas Terbaru</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div class="space-y-4">
+          <div v-for="activity in recentActivities" :key="activity.id" class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
+            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium">{{ activity.description }}</p>
+              <p class="text-xs text-gray-500">{{ formatDate(activity.timestamp) }}</p>
+            </div>
+            <Badge :variant="activity.type === 'organik' ? 'default' : 'destructive'">
+              {{ activity.type }}
+            </Badge>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import DashboardStat from '@/components/DashboardStats.vue'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+
+const isLoading = ref(false)
+const stats = ref({
+  totalImages: 127,
+  totalOrganik: 74,
+  totalAnorganik: 53
+})
+
+const recentActivities = ref([
+  {
+    id: 1,
+    description: 'Deteksi sampah organik berhasil',
+    type: 'organik',
+    timestamp: new Date(Date.now() - 1000 * 60 * 30) // 30 minutes ago
+  },
+  {
+    id: 2,
+    description: 'Deteksi sampah anorganik berhasil',
+    type: 'anorganik',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2) // 2 hours ago
+  },
+  {
+    id: 3,
+    description: 'Deteksi sampah organik berhasil',
+    type: 'organik',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5) // 5 hours ago
+  }
+])
+
+const formatDate = (date) => {
+  return new Intl.DateTimeFormat('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(date)
+}
+
+const refreshData = async () => {
+  isLoading.value = true
+  // Simulate API call
+  await new Promise(resolve => setTimeout(resolve, 1000))
+  // Here you would fetch real data from Firebase
+  isLoading.value = false
+}
+
+onMounted(() => {
+  // Load initial data from Firebase
+})
+</script>
+
+    5. history.vue :
+    <template>
+  <div class="space-y-6">
+    <div class="flex items-center justify-between">
+      <h1 class="text-3xl font-bold text-gray-900">Riwayat Deteksi</h1>
+      <div class="flex space-x-2">
+        <Button variant="outline" @click="clearHistory" :disabled="historyItems.length === 0">
+          Hapus Semua
+        </Button>
+        <Button @click="exportHistory" :disabled="historyItems.length === 0">
+          Export
+        </Button>
+      </div>
+    </div>
+
+    <!-- Filter Section -->
+    <Card>
+      <CardContent class="pt-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <Label for="dateFrom">Dari Tanggal</Label>
+            <Input id="dateFrom" type="date" v-model="filters.dateFrom" />
+          </div>
+          <div>
+            <Label for="dateTo">Sampai Tanggal</Label>
+            <Input id="dateTo" type="date" v-model="filters.dateTo" />
+          </div>
+          <div>
+            <Label for="wasteType">Jenis Sampah</Label>
+            <select id="wasteType" v-model="filters.wasteType" class="w-full p-2 border border-gray-300 rounded-md">
+              <option value="">Semua</option>
+              <option value="organik">Organik</option>
+              <option value="anorganik">Anorganik</option>
+            </select>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+
+    <!-- History List -->
+    <div v-if="filteredHistory.length === 0" class="text-center py-12">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">Tidak ada riwayat</h3>
+      <p class="mt-1 text-sm text-gray-500">Mulai deteksi sampah untuk melihat riwayat di sini.</p>
+    </div>
+
+    <div v-else class="grid gap-4">
+      <Card v-for="item in filteredHistory" :key="item.id" class="overflow-hidden">
+        <CardContent class="p-0">
+          <div class="flex">
+            <!-- Image -->
+            <div class="w-32 h-32 flex-shrink-0">
+              <img 
+                :src="item.originalImage" 
+                :alt="`Detection ${item.id}`"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            
+            <!-- Content -->
+            <div class="flex-1 p-4">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="text-lg font-semibold">Deteksi #{{ item.id }}</h3>
+                  <p class="text-sm text-gray-500">{{ formatDate(item.timestamp) }}</p>
+                </div>
+                <Badge :variant="item.dominantType === 'organik' ? 'default' : 'destructive'">
+                  {{ item.dominantType }}
+                </Badge>
+              </div>
+              
+              <div class="mt-2 grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span class="font-medium">Objek Terdeteksi:</span>
+                  <span class="ml-1">{{ item.detectionCount }}</span>
+                </div>
+                <div>
+                  <span class="font-medium">Waktu Proses:</span>
+                  <span class="ml-1">{{ item.processingTime }}s</span>
+                </div>
+                <div>
+                  <span class="font-medium">Confidence:</span>
+                  <span class="ml-1">{{ item.avgConfidence }}%</span>
+                </div>
+                <div>
+                  <span class="font-medium">IoU Threshold:</span>
+                  <span class="ml-1">{{ item.iouThreshold }}</span>
+                </div>
+              </div>
+
+              <div class="mt-3 flex space-x-2">
+                <Button size="sm" variant="outline" @click="viewDetails(item)">
+                  Lihat Detail
+                </Button>
+                <Button size="sm" variant="outline" @click="downloadResult(item)">
+                  Download
+                </Button>
+                <Button size="sm" variant="destructive" @click="deleteItem(item.id)">
+                  Hapus
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+
+const filters = ref({
+  dateFrom: '',
+  dateTo: '',
+  wasteType: ''
+})
+
+// Mock data - replace with Firebase data
+const historyItems = ref([
+  {
+    id: 1,
+    originalImage: '/placeholder.svg?height=128&width=128',
+    annotatedImage: '/placeholder.svg?height=400&width=400',
+    timestamp: new Date(Date.now() - 1000 * 60 * 30),
+    detectionCount: 3,
+    processingTime: 1.234,
+    avgConfidence: 85.6,
+    iouThreshold: 0.45,
+    dominantType: 'organik',
+    detections: []
+  },
+  {
+    id: 2,
+    originalImage: '/placeholder.svg?height=128&width=128',
+    annotatedImage: '/placeholder.svg?height=400&width=400',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
+    detectionCount: 2,
+    processingTime: 0.987,
+    avgConfidence: 92.3,
+    iouThreshold: 0.45,
+    dominantType: 'anorganik',
+    detections: []
+  }
+])
+
+const filteredHistory = computed(() => {
+  return historyItems.value.filter(item => {
+    const matchesDateFrom = !filters.value.dateFrom || 
+      item.timestamp >= new Date(filters.value.dateFrom)
+    const matchesDateTo = !filters.value.dateTo || 
+      item.timestamp <= new Date(filters.value.dateTo + 'T23:59:59')
+    const matchesType = !filters.value.wasteType || 
+      item.dominantType === filters.value.wasteType
+    
+    return matchesDateFrom && matchesDateTo && matchesType
+  })
+})
+
+const formatDate = (date) => {
+  return new Intl.DateTimeFormat('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(date)
+}
+
+const viewDetails = (item) => {
+  // Navigate to detail page or show modal
+  console.log('View details for:', item)
+}
+
+const downloadResult = (item) => {
+  // Download annotated image
+  const link = document.createElement('a')
+  link.href = item.annotatedImage
+  link.download = `detection-${item.id}.jpg`
+  link.click()
+}
+
+const deleteItem = (id) => {
+  if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
+    const index = historyItems.value.findIndex(item => item.id === id)
+    if (index > -1) {
+      historyItems.value.splice(index, 1)
     }
-    };
+  }
+}
 
-    const handleSubmit = async () => {
-    if (!selectedFile.value) {
-        fileError.value = 'Silakan pilih file gambar terlebih dahulu.';
-        return;
-    }
+const clearHistory = () => {
+  if (confirm('Apakah Anda yakin ingin menghapus semua riwayat?')) {
+    historyItems.value = []
+  }
+}
 
-    isSubmitting.value = true;
-    apiError.value = null;
-    detectionResult.value = null;
+const exportHistory = () => {
+  // Export to CSV or JSON
+  const dataStr = JSON.stringify(historyItems.value, null, 2)
+  const dataBlob = new Blob([dataStr], { type: 'application/json' })
+  const url = URL.createObjectURL(dataBlob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = 'detection-history.json'
+  link.click()
+}
+</script>
 
-    const formData = new FormData();
-    formData.append('file', selectedFile.value);
-    formData.append('confidence_threshold', confidenceThreshold.value);
-    formData.append('iou_threshold', iouThreshold.value);
-    formData.append('return_image', 'true'); // Selalu minta gambar teranotasi
+plugins > 
+  1. firebase.client.js :
+  import { defineNuxtPlugin } from "#app";
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { useRuntimeConfig } from "#app";
 
-    try {
-        // Ganti URL ini jika backend Anda berjalan di alamat/port yang berbeda
-        const response = await fetch('http://localhost:8000/api/v1/detection/detect', {
-        method: 'POST',
-        body: formData,
-        });
+export default defineNuxtPlugin(() => {
+  const config = useRuntimeConfig();
 
-        if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Terjadi kesalahan saat deteksi.');
-        }
+  const firebaseConfig = {
+    apiKey: config.public.firebaseApiKey,
+    authDomain: config.public.firebaseAuthDomain,
+    projectId: config.public.firebaseProjectId,
+    storageBucket: config.public.firebaseStorageBucket,
+    messagingSenderId: config.public.firebaseMessagingSenderId,
+    appId: config.public.firebaseAppId,
+  };
 
-        const data = await response.json();
-        detectionResult.value = data;
-    } catch (error) {
-        apiError.value = error.message;
-        console.error('Error during detection:', error);
-    } finally {
-        isSubmitting.value = false;
-    }
-    };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-
-    </script>
+  return {
+    provide: {
+      firebase: app,
+      firestore: db,
+    },
+  };
+});
 
 
 app.vue :
 <template>
-  <div class="min-h-screen bg-gray-100 text-gray-900">
-    <header class="bg-white shadow p-4 sticky top-0 z-50">
-      <h1 class="text-xl font-bold">Deteksi Sampah App</h1>
-    </header>
-
-    <main class="p-4">
+  <div class="min-h-screen bg-gray-50">
+    <AppNavigation />
+    
+    <main class="container mx-auto px-4 py-8">
       <NuxtPage />
     </main>
 
-    <footer class="bg-white p-4 text-center mt-10 text-sm text-gray-500">
-      &copy; 2025 - Sistem Deteksi Sampah by Uzyn
+    <footer class="bg-white border-t mt-16">
+      <div class="container mx-auto px-4 py-8">
+        <div class="grid md:grid-cols-3 gap-8">
+          <div>
+            <div class="flex items-center space-x-2 mb-4">
+              <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </div>
+              <span class="text-xl font-bold text-gray-800">EcoDetect</span>
+            </div>
+            <p class="text-gray-600 text-sm">
+              Sistem deteksi sampah berbasis AI untuk lingkungan yang lebih bersih dan berkelanjutan.
+            </p>
+          </div>
+          
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-4">Fitur</h3>
+            <ul class="space-y-2 text-sm text-gray-600">
+              <li>Deteksi Sampah AI</li>
+              <li>Dashboard Analitik</li>
+              <li>Riwayat Deteksi</li>
+              <li>Edukasi Lingkungan</li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-4">Navigasi</h3>
+            <ul class="space-y-2 text-sm text-gray-600">
+              <li><NuxtLink to="/" class="hover:text-green-600">Deteksi</NuxtLink></li>
+              <li><NuxtLink to="/dashboard" class="hover:text-green-600">Dashboard</NuxtLink></li>
+              <li><NuxtLink to="/history" class="hover:text-green-600">Riwayat</NuxtLink></li>
+              <li><NuxtLink to="/edukasi" class="hover:text-green-600">Edukasi</NuxtLink></li>
+              <li><NuxtLink to="/about" class="hover:text-green-600">Tentang</NuxtLink></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="border-t mt-8 pt-8 text-center text-sm text-gray-500">
+          <p>&copy; 2025 EcoDetect by Uzyn. All rights reserved.</p>
+        </div>
+      </div>
     </footer>
   </div>
 </template>
 
 <script setup>
+import AppNavigation from '@/components/AppNavigation.vue'
 </script>
 
 
+nuxt.config.ts :
+// https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from "@tailwindcss/vite";
+
+export default defineNuxtConfig({
+  compatibilityDate: "2025-07-15",
+  devtools: { enabled: true },
+  css: ["~/assets/css/main.css"],
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
+
+  modules: ["shadcn-nuxt"],
+  shadcn: {
+    /**
+     * Prefix for all the imported component
+     */
+    prefix: "",
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: "./components/ui",
+  },
+  runtimeConfig: {
+    public: {
+      firebaseApiKey: process.env.FIREBASE_API_KEY,
+      firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN,
+      firebaseProjectId: process.env.FIREBASE_PROJECT_ID,
+      firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+      firebaseAppId: process.env.FIREBASE_APP_ID,
+    },
+  },
+});
+
+.env :
+# Firebase Configuration
+FIREBASE_API_KEY="AIzaSyAXuONZbXsFrYpFk_gd9-5Wr0ru4OcW4xI"
+FIREBASE_AUTH_DOMAIN="deteksi-sampah-uzyn.firebaseapp.com"
+FIREBASE_PROJECT_ID="deteksi-sampah-uzyn"
+FIREBASE_STORAGE_BUCKET="deteksi-sampah-uzyn.firebasestorage.app"
+FIREBASE_MESSAGING_SENDER_ID="834873767492"
+FIREBASE_APP_ID="1:834873767492:web:4776953d2c018daa8aee11"
+measurementId= "G-TDST0WBPR7"
+
+# API Configuration
+API_BASE_URL=http://localhost:8000

@@ -1,5 +1,3 @@
-import { useRuntimeConfig } from "#app";
-
 export const useCloudinary = () => {
   const config = useRuntimeConfig();
 
@@ -7,15 +5,11 @@ export const useCloudinary = () => {
     try {
       // Validasi konfigurasi
       if (!config.public.cloudinaryCloudName) {
-        throw new Error(
-          "Cloudinary cloud name tidak dikonfigurasi. Periksa file .env"
-        );
+        throw new Error("Cloudinary cloud name tidak dikonfigurasi");
       }
 
       if (!config.public.cloudinaryUploadPreset) {
-        throw new Error(
-          "Cloudinary upload preset tidak dikonfigurasi. Periksa file .env"
-        );
+        throw new Error("Cloudinary upload preset tidak dikonfigurasi");
       }
 
       // Validasi file
@@ -24,7 +18,6 @@ export const useCloudinary = () => {
       }
 
       if (file.size > 10 * 1024 * 1024) {
-        // 10MB limit
         throw new Error("Ukuran file terlalu besar (maksimal 10MB)");
       }
 
@@ -32,10 +25,10 @@ export const useCloudinary = () => {
       formData.append("file", file);
       formData.append("upload_preset", config.public.cloudinaryUploadPreset);
 
-      // Optional: Add folder organization
-      formData.append("folder", "waste-detection");
+      // HAPUS folder karena sudah diset di upload preset
+      // formData.append("folder", "waste-detection"); // <-- Hapus ini
 
-      // Optional: Add tags for better organization
+      // Optional: Add tags
       formData.append("tags", "waste,detection,ecodetect");
 
       console.log("Uploading to Cloudinary:", {
@@ -59,17 +52,15 @@ export const useCloudinary = () => {
         const errorData = await response.text();
         console.error("Cloudinary error response:", errorData);
 
-        // Parse error message if possible
+        let errorMessage;
         try {
           const errorJson = JSON.parse(errorData);
-          throw new Error(
-            `Cloudinary Error: ${errorJson.error?.message || errorData}`
-          );
+          errorMessage = errorJson.error?.message || errorData;
         } catch {
-          throw new Error(
-            `Cloudinary Error (${response.status}): ${errorData}`
-          );
+          errorMessage = `HTTP ${response.status}: ${errorData}`;
         }
+
+        throw new Error(`Cloudinary Error: ${errorMessage}`);
       }
 
       const data = await response.json();
@@ -91,39 +82,8 @@ export const useCloudinary = () => {
     }
   };
 
-  const deleteImage = async (publicId) => {
-    try {
-      // Note: Deletion requires server-side implementation for security
-      // This is just a placeholder for now
-      console.log("Delete image:", publicId);
-
-      // For production, you would need to implement this on your backend
-      // because deletion requires your API secret which should not be exposed
-
-      return { success: true, message: "Image deletion logged" };
-    } catch (error) {
-      console.error("Error deleting from Cloudinary:", error);
-      throw error;
-    }
-  };
-
-  const getOptimizedUrl = (publicId, options = {}) => {
-    if (!publicId || !config.public.cloudinaryCloudName) return null;
-
-    const {
-      width = "auto",
-      height = "auto",
-      crop = "fill",
-      quality = "auto",
-      format = "auto",
-    } = options;
-
-    return `https://res.cloudinary.com/${config.public.cloudinaryCloudName}/image/upload/w_${width},h_${height},c_${crop},q_${quality},f_${format}/${publicId}`;
-  };
-
   return {
     uploadImage,
-    deleteImage,
-    getOptimizedUrl,
+    // ... methods lainnya
   };
 };

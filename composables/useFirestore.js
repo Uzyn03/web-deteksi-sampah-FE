@@ -67,6 +67,7 @@ export const useFirestore = () => {
       let totalImages = 0;
       let totalOrganik = 0;
       let totalAnorganik = 0;
+      let totalCampuran = 0;
       const dailyStats = {};
       const weeklyStats = {};
 
@@ -79,19 +80,28 @@ export const useFirestore = () => {
           totalOrganik++;
         } else if (data.dominantType === "anorganik") {
           totalAnorganik++;
+        } else if (data.dominantType === "campuran") {
+          totalCampuran++;
         }
 
         // Daily statistics
         const date = data.timestamp?.toDate() || new Date(data.createdAt);
         const dateKey = date.toISOString().split("T")[0];
         if (!dailyStats[dateKey]) {
-          dailyStats[dateKey] = { organik: 0, anorganik: 0, total: 0 };
+          dailyStats[dateKey] = {
+            organik: 0,
+            anorganik: 0,
+            campuran: 0,
+            total: 0,
+          };
         }
         dailyStats[dateKey].total++;
         if (data.dominantType === "organik") {
           dailyStats[dateKey].organik++;
         } else if (data.dominantType === "anorganik") {
           dailyStats[dateKey].anorganik++;
+        } else if (data.dominantType === "campuran") {
+          dailyStats[dateKey].campuran++;
         }
       });
 
@@ -99,6 +109,7 @@ export const useFirestore = () => {
         totalImages,
         totalOrganik,
         totalAnorganik,
+        totalCampuran,
         dailyStats,
         weeklyStats,
       };
@@ -119,12 +130,27 @@ export const useFirestore = () => {
       const activities = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
+
+        let description = `Deteksi sampah ${data.dominantType} berhasil`;
+        if (data.wasteTypeCounts) {
+          const counts = data.wasteTypeCounts;
+          const parts = [];
+          if (counts.organik > 0) parts.push(`${counts.organik} organik`);
+          if (counts.anorganik > 0) parts.push(`${counts.anorganik} anorganik`);
+          if (counts.campuran > 0) parts.push(`${counts.campuran} campuran`);
+
+          if (parts.length > 0) {
+            description = `Deteksi: ${parts.join(", ")}`;
+          }
+        }
+
         activities.push({
           id: doc.id,
-          description: `Deteksi sampah ${data.dominantType} berhasil`,
+          description,
           type: data.dominantType,
           timestamp: data.timestamp?.toDate() || new Date(data.createdAt),
           detectionCount: data.detectionCount || 0,
+          wasteTypeCounts: data.wasteTypeCounts || null,
         });
       });
       return activities;

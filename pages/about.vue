@@ -171,27 +171,107 @@
     </Card>
 
     <!-- Contact -->
-    <Card>
-      <CardHeader>
-        <CardTitle>Kontak Developer</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div class="flex items-center justify-center space-x-8">
-          <div class="text-center">
-            <div class="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-2 flex items-center justify-center">
-              <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-              </svg>
-            </div>
-            <h3 class="font-semibold">Uzyn</h3>
-            <p class="text-sm text-gray-600">Full Stack Developer</p>
-          </div>
+<Card>
+  <CardHeader>
+    <CardTitle>Kontak Developer</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <div class="flex items-center justify-center space-x-8">
+      <div class="text-center">
+        <!-- Profile Photo -->
+        <div class="w-16 h-16 rounded-full mx-auto mb-3 overflow-hidden border-2 border-gray-200">
+          <img 
+            :src="profilePhoto" 
+            :alt="developerName"
+            class="w-full h-full object-cover"
+            @error="handleImageError"
+          />
         </div>
-      </CardContent>
-    </Card>
+        
+        <!-- Name and Title -->
+        <h3 class="font-semibold text-lg">{{ developerName }}</h3>
+        <p class="text-sm text-gray-600 mb-3">{{ developerTitle }}</p>
+        
+        <!-- Contact Icons -->
+        <div class="flex items-center justify-center space-x-4">
+          <!-- Instagram -->
+          <a 
+            :href="instagramUrl" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="p-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-110"
+            title="Follow di Instagram"
+          >
+            <Instagram class="w-5 h-5" />
+          </a>
+          
+          <!-- Email -->
+          <a 
+            :href="emailUrl" 
+            class="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300 transform hover:scale-110"
+            title="Kirim Email"
+          >
+            <Mail class="w-5 h-5" />
+          </a>
+          
+          <!-- GitHub -->
+          <a 
+            :href="githubUrl" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="p-2 rounded-full bg-gray-800 text-white hover:bg-gray-900 transition-all duration-300 transform hover:scale-110"
+            title="GitHub Profile"
+          >
+            <Github class="w-5 h-5" />
+          </a>
+          <!-- linkedln -->
+          <a 
+            :href="linkedinUrl" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="p-2 rounded-full bg-blue-700 text-white hover:bg-blue-900 transition-all duration-300 transform hover:scale-110"
+            title="linkedin Profile"
+          >
+            <linkedin class="w-5 h-5" />
+          </a>
+        </div>
+        
+        <!-- Contact Info Text -->
+        <div class="mt-4 space-y-1">
+          <p class="text-xs text-gray-500">
+            📧 {{ developerEmail }}
+          </p>
+          <p class="text-xs text-gray-500">
+            📱 Ikuti untuk update project terbaru
+          </p>
+        </div>
+      </div>
+    </div>
+  </CardContent>
+</Card>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Instagram, Mail, Github, Linkedin } from 'lucide-vue-next'
+
+// Data developer - sesuaikan dengan info Anda
+const developerName = ref('Uzyn')
+const developerTitle = ref('Full Stack Developer')
+const developerEmail = ref('ahmadpjn06@gmail.com') // Ganti dengan email Anda
+const profilePhoto = ref('https://res.cloudinary.com/dimnxx6fd/image/upload/v1754300812/uzyngans_ivyylk.jpg') // Path ke foto profil Anda
+
+// Social Media URLs - sesuaikan dengan akun Anda
+const instagramUrl = ref('https://instagram.com/fauzynn_')
+const emailUrl = ref(`mailto:${developerEmail.value}?subject=Tanya tentang EcoDetect&body=Halo Uzyn, saya tertarik dengan project EcoDetect...`)
+const githubUrl = ref('https://github.com/uzyn03')
+const linkedinUrl = ref('https://www.linkedin.com/in/ahmad-fauzi-869ba22a1/')
+
+// Handle error jika foto tidak ditemukan
+const handleImageError = (event) => {
+  // Fallback ke avatar default jika foto tidak ditemukan
+  event.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE2IDdhNCA0IDAgMTEtOCAwIDQgNCAwIDAgOCAwek0xMiAxNGE3IDcgMCAwMC03IDdoMTRhNyA3IDAgMDAtNy03eiIgZmlsbD0iIzlDQTNBRiIvPgo8L3N2Zz4K'
+}
 </script>

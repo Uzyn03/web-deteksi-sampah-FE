@@ -68,7 +68,7 @@
         <CardContent class="p-0">
           <div class="flex">
             <!-- Image -->
-            <div class="w-32 h-32 flex-shrink-0">
+            <div class="w-32 h-32 mt-8 ml-4 flex-shrink-0">
               <img 
                 :src="item.originalImageUrl || '/placeholder.svg?height=128&width=128'" 
                 :alt="`Detection ${item.id}`"
@@ -78,7 +78,7 @@
             </div>
             
             <!-- Content -->
-            <div class="flex-1 p-4">
+            <div class="flex-1 p-4 ">
               <div class="flex items-start justify-between">
                 <div>
                   <h3 class="text-lg font-semibold">Deteksi #{{ item.id.slice(-6) }}</h3>

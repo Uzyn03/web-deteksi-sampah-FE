@@ -138,6 +138,34 @@
           <p class="mb-2">Ditemukan: <span class="font-bold">{{ detectionResult.detection_count }} objek</span></p>
           <p class="mb-4">Waktu Pemrosesan: <span class="font-bold">{{ detectionResult.processing_time.toFixed(3) }} detik</span></p>
 
+          <!-- Waste Type Summary -->
+          <div v-if="wasteTypeSummary" class="mb-6 p-4 bg-gray-50 rounded-lg">
+            <h4 class="text-lg font-medium mb-3">Ringkasan Jenis Sampah:</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="text-center p-3 bg-green-100 rounded-lg">
+                <div class="text-2xl font-bold text-green-700">{{ wasteTypeSummary.organik }}</div>
+                <div class="text-sm text-green-600">Sampah Organik</div>
+              </div>
+              <div class="text-center p-3 bg-red-100 rounded-lg">
+                <div class="text-2xl font-bold text-red-700">{{ wasteTypeSummary.anorganik }}</div>
+                <div class="text-sm text-red-600">Sampah Anorganik</div>
+              </div>
+              <div class="text-center p-3 bg-blue-100 rounded-lg">
+                <div class="text-2xl font-bold text-blue-700">{{ wasteTypeSummary.campuran }}</div>
+                <div class="text-sm text-blue-600">Sampah Campuran</div>
+              </div>
+            </div>
+            <div class="mt-4 text-center">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+                    :class="getDominantTypeClass(wasteTypeSummary.dominantType)">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Dominan: {{ wasteTypeSummary.dominantType }}
+              </span>
+            </div>
+          </div>
+
           <div v-if="detectionResult.annotated_image" class="mb-6">
             <h4 class="text-lg font-medium mb-2">Gambar Teranotasi:</h4>
             <img :src="detectionResult.annotated_image" alt="Annotated Image" class="max-w-full h-auto rounded-md shadow-md" />
@@ -146,8 +174,16 @@
           <div v-if="detectionResult.detections && detectionResult.detections.length > 0">
             <h4 class="text-lg font-medium mb-2">Detail Deteksi:</h4>
             <ul class="space-y-2">
-              <li v-for="(det, index) in detectionResult.detections" :key="index" class="p-3 bg-gray-50 rounded-md border border-gray-200">
-                <p><strong>Kelas:</strong> {{ det.class_name }} (ID: {{ det.class_id }})</p>
+              <li v-for="(det, index) in detectionResult.detections" :key="index" 
+                  class="p-3 bg-gray-50 rounded-md border border-gray-200">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-semibold">{{ det.class_name }}</span>
+                  <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                        :class="getClassTypeColor(det.class_name)">
+                    {{ getSimplifiedType(det.class_name) }}
+                  </span>
+                </div>
+                <p><strong>ID Kelas:</strong> {{ det.class_id }}</p>
                 <p><strong>Kepercayaan:</strong> {{ (det.confidence * 100).toFixed(2) }}%</p>
                 <p><strong>BBox:</strong> (x1: {{ det.bbox.x1.toFixed(2)}}, y1: {{ det.bbox.y1.toFixed(2)}}, x2: {{ det.bbox.x2.toFixed(2)}}, y2: {{ det.bbox.y2.toFixed(2)}})</p>
               </li>
@@ -180,6 +216,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useCloudinary } from '@/composables/useCloudinary'
 import { useFirestore } from '@/composables/useFirestore'
+
 
 // SEO
 useHead({
@@ -215,6 +252,93 @@ const isCloudinaryConfigured = computed(() => {
 const apiBaseUrl = computed(() => {
   return config.public.apiBaseUrl || 'http://localhost:8000'
 })
+
+// Compute waste type summary
+const wasteTypeSummary = computed(() => {
+  if (!detectionResult.value?.detections?.length) return null
+
+  const detections = detectionResult.value.detections
+  let organikCount = 0
+  let anorganikCount = 0
+  let campuranCount = 0
+
+  detections.forEach(detection => {
+    const className = detection.class_name.toLowerCase()
+    
+    if (className.includes('sampah organik') || className === 'sampah organik') {
+      organikCount++
+    } else if (className.includes('sampah anorganik') || className === 'sampah anorganik') {
+      anorganikCount++
+    } else if (className.includes('sampah-anorganik') || className === 'sampah-anorganik') {
+      campuranCount++
+    }
+  })
+
+  // Determine dominant type
+  let dominantType = 'campuran'
+  let maxCount = campuranCount
+
+  if (organikCount > maxCount) {
+    dominantType = 'organik'
+    maxCount = organikCount
+  }
+  
+  if (anorganikCount > maxCount) {
+    dominantType = 'anorganik'
+    maxCount = anorganikCount
+  }
+
+  // If there's a tie, prioritize based on environmental impact
+  if (organikCount === anorganikCount && organikCount > campuranCount) {
+    dominantType = 'campuran' // Mixed when organic and inorganic are equal
+  }
+
+  return {
+    organik: organikCount,
+    anorganik: anorganikCount,
+    campuran: campuranCount,
+    dominantType,
+    total: detections.length
+  }
+})
+
+// Helper functions for styling
+const getDominantTypeClass = (type) => {
+  switch (type) {
+    case 'organik':
+      return 'bg-green-100 text-green-800'
+    case 'anorganik':
+      return 'bg-red-100 text-red-800'
+    case 'campuran':
+      return 'bg-blue-100 text-blue-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
+  }
+}
+
+const getClassTypeColor = (className) => {
+  const name = className.toLowerCase()
+  if (name.includes('sampah organik') || name === 'sampah organik') {
+    return 'bg-green-100 text-green-800'
+  } else if (name.includes('sampah anorganik') || name === 'sampah anorganik') {
+    return 'bg-red-100 text-red-800'
+  } else if (name.includes('sampah-anorganik') || name === 'sampah-anorganik') {
+    return 'bg-blue-100 text-blue-800'
+  }
+  return 'bg-gray-100 text-gray-800'
+}
+
+const getSimplifiedType = (className) => {
+  const name = className.toLowerCase()
+  if (name.includes('sampah organik') || name === 'sampah organik') {
+    return 'Organik'
+  } else if (name.includes('sampah anorganik') || name === 'sampah anorganik') {
+    return 'Anorganik'
+  } else if (name.includes('sampah-anorganik') || name === 'sampah-anorganik') {
+    return 'Campuran'
+  }
+  return 'Unknown'
+}
 
 const removeImage = () => {
   selectedFile.value = null
@@ -326,23 +450,10 @@ const handleSubmit = async () => {
 }
 
 const saveToHistory = async () => {
-  if (!detectionResult.value) return
+  if (!detectionResult.value || !wasteTypeSummary.value) return
 
   isSaving.value = true
   try {
-    // Determine dominant type
-    const organikCount = detectionResult.value.detections?.filter(d => 
-      d.class_name.toLowerCase().includes('organic') || 
-      d.class_name.toLowerCase().includes('organik')
-    ).length || 0
-    
-    const anorganikCount = detectionResult.value.detections?.filter(d => 
-      !d.class_name.toLowerCase().includes('organic') && 
-      !d.class_name.toLowerCase().includes('organik')
-    ).length || 0
-
-    const dominantType = organikCount > anorganikCount ? 'organik' : 'anorganik'
-
     const historyData = {
       originalImageUrl: detectionResult.value.originalImageUrl,
       annotatedImageUrl: detectionResult.value.annotated_image,
@@ -351,7 +462,12 @@ const saveToHistory = async () => {
       processingTime: detectionResult.value.processing_time,
       confidenceThreshold: confidenceThreshold.value,
       iouThreshold: iouThreshold.value,
-      dominantType,
+      dominantType: wasteTypeSummary.value.dominantType,
+      wasteTypeCounts: {
+        organik: wasteTypeSummary.value.organik,
+        anorganik: wasteTypeSummary.value.anorganik,
+        campuran: wasteTypeSummary.value.campuran
+      },
       detections: detectionResult.value.detections,
       avgConfidence: detectionResult.value.detections?.reduce((sum, d) => sum + d.confidence, 0) / (detectionResult.value.detections?.length || 1) * 100,
     }

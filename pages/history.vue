@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between">
       <h1 class="text-3xl font-bold text-gray-900">Riwayat Deteksi</h1>
       <div class="flex space-x-2">
-        <Button variant="outline" @click="clearHistory" :disabled="historyItems.length === 0 || isLoading">
+        <Button class="hidden" variant="outline" @click="clearHistory" :disabled="historyItems.length === 0 || isLoading">
           Hapus Semua
         </Button>
         <Button @click="exportHistory" :disabled="historyItems.length === 0 || isLoading">
@@ -115,7 +115,7 @@
                 <Button size="sm" variant="outline" @click="downloadResult(item)" v-if="item.annotatedImageUrl">
                   Download
                 </Button>
-                <Button size="sm" variant="destructive" @click="deleteItem(item.id)" :disabled="isDeleting">
+                <Button class="hidden" size="sm" variant="destructive" @click="deleteItem(item.id)" :disabled="isDeleting">
                   Hapus
                 </Button>
               </div>

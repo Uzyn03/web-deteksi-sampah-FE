@@ -18,17 +18,6 @@
               </p>
             </div>
           </div>
-          
-          <div v-if="isCloudinaryConfigured" class="p-3 bg-green-100 border border-green-400 rounded-md">
-            <div class="flex items-center">
-              <svg class="w-4 h-4 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <p class="text-sm text-green-800">
-                <strong>Siap:</strong> Cloudinary terkonfigurasi. Gambar akan disimpan ke cloud storage.
-              </p>
-            </div>
-          </div>
         </div>
 
         <form @submit.prevent="handleSubmit" class="space-y-6">
@@ -151,8 +140,8 @@
                 <div class="text-sm text-red-600">Sampah Anorganik</div>
               </div>
               <div class="text-center p-3 bg-blue-100 rounded-lg">
-                <div class="text-2xl font-bold text-blue-700">{{ wasteTypeSummary.campuran }}</div>
-                <div class="text-sm text-blue-600">Sampah Campuran</div>
+                <div class="text-2xl font-bold text-blue-700">{{ wasteTypeSummary.anorganik2 }}</div>
+                <div class="text-sm text-blue-600">Sampah Anorganik</div>
               </div>
             </div>
             <div class="mt-4 text-center">
@@ -260,7 +249,7 @@ const wasteTypeSummary = computed(() => {
   const detections = detectionResult.value.detections
   let organikCount = 0
   let anorganikCount = 0
-  let campuranCount = 0
+  let anorganik2Count = 0
 
   detections.forEach(detection => {
     const className = detection.class_name.toLowerCase()
@@ -270,13 +259,13 @@ const wasteTypeSummary = computed(() => {
     } else if (className.includes('sampah anorganik') || className === 'sampah anorganik') {
       anorganikCount++
     } else if (className.includes('sampah-anorganik') || className === 'sampah-anorganik') {
-      campuranCount++
+      anorganik2Count++
     }
   })
 
   // Determine dominant type
-  let dominantType = 'campuran'
-  let maxCount = campuranCount
+  let dominantType = 'anorganik2'
+  let maxCount = anorganik2Count
 
   if (organikCount > maxCount) {
     dominantType = 'organik'
@@ -289,14 +278,14 @@ const wasteTypeSummary = computed(() => {
   }
 
   // If there's a tie, prioritize based on environmental impact
-  if (organikCount === anorganikCount && organikCount > campuranCount) {
+  if (organikCount === anorganikCount && organikCount > anorganik2Count) {
     dominantType = 'campuran' // Mixed when organic and inorganic are equal
   }
 
   return {
     organik: organikCount,
     anorganik: anorganikCount,
-    campuran: campuranCount,
+    anorganik2: anorganik2Count,
     dominantType,
     total: detections.length
   }
@@ -309,7 +298,7 @@ const getDominantTypeClass = (type) => {
       return 'bg-green-100 text-green-800'
     case 'anorganik':
       return 'bg-red-100 text-red-800'
-    case 'campuran':
+    case 'anorganik2':
       return 'bg-blue-100 text-blue-800'
     default:
       return 'bg-gray-100 text-gray-800'
@@ -335,7 +324,7 @@ const getSimplifiedType = (className) => {
   } else if (name.includes('sampah anorganik') || name === 'sampah anorganik') {
     return 'Anorganik'
   } else if (name.includes('sampah-anorganik') || name === 'sampah-anorganik') {
-    return 'Campuran'
+    return 'anorganik2'
   }
   return 'Unknown'
 }
@@ -466,7 +455,7 @@ const saveToHistory = async () => {
       wasteTypeCounts: {
         organik: wasteTypeSummary.value.organik,
         anorganik: wasteTypeSummary.value.anorganik,
-        campuran: wasteTypeSummary.value.campuran
+        anorganik2: wasteTypeSummary.value.anorganik2
       },
       detections: detectionResult.value.detections,
       avgConfidence: detectionResult.value.detections?.reduce((sum, d) => sum + d.confidence, 0) / (detectionResult.value.detections?.length || 1) * 100,
